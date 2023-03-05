@@ -8,11 +8,13 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from .forms import PasswordForm
 from .models import UserPassword
+from django.contrib import messages
 # Create your views here.
 
 def passwords(request):
-
-    return render(request, 'passwords/passwords.html',)
+    apps = UserPassword.objects.filter(user=request.user)
+    context = {'apps': apps}
+    return render(request, 'passwords/passwords.html', context)
 
 @login_required(login_url='user-login')
 def edit_password(request, pk):
@@ -34,17 +36,23 @@ def edit_password(request, pk):
 @login_required(login_url='user-login')
 def add_password(request, pk):
     form = PasswordForm()
-    app = UserPassword.objects.get(id=pk)
+    context = {"form":form}
+    app = UserPassword.objects.filter(user=request.user)
+    print(app)
 
     if request.method == 'POST':
+        for a in app:
+            if request.POST['app'] == a.app:
+                messages.error(request, 'App already exists!')
+                return render(request, 'passwords/passwords_add.html', context)
+
         UserPassword.objects.create(
             user=request.user,
             app=request.POST['app'],
             password=request.POST.get('password')
         )
-        return redirect('passwords', pk=pk)
+        return redirect('passwords')
 
-    context = {"form":form}
     return render(request, 'passwords/passwords_add.html', context)
 
 @login_required(login_url='user-login')

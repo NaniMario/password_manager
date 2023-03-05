@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users.apps.UsersConfig',
     'crispy_forms',
-    'passwords.apps.PasswordsConfig'
+    'passwords.apps.PasswordsConfig',
+    'crispy_bootstrap4',
 ]
 
 MIDDLEWARE = [

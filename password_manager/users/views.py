@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def user_login(request):
+    if request.user.is_authenticated:
+        return redirect('passwords')
     type = 'login'
     if request.method == "POST":
         # print(request.POST)
